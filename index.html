@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset="UTF-8">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="/TheHall/scripts/load.js"></script>
+  <script src="/TheHall/scripts/page.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/TheHall/css/main.css">
+  <title>The Hall</title>
+ </head>
+ <body>
+	<div class="top-bar">
+		<ul class="nav nav-pills dark">
+			<li class="active" id="home"><a href="#">Home</a></li>
+			<li id="standings"><a id="standingsAnchor" href="/TheHall/standings.html">Standings</a></li>
+			<li id="seasons"><a id="seasonsAnchor" href="/TheHall/seasons.html">Seasons</a></li>
+			<li id="advanced"><a id="advancedAnchor" href="/TheHall/advanced.html">Advanced</a></li>
+		</ul>
+		<button style="float: right" type="button" class="btn btn-default navbar-btn" onclick="clearSite()">Clear Site</button>
+	</div>
+	<div class="center-box">
+		<h4>To begin, enter your espn league page url below</h4>
+		<div class="row">
+		  <div class="col-lg-12">
+			<div class="input-group">
+			  <span class="input-group-btn">
+				<button class="btn btn-default" type="button" onclick="requestCrossDomain()">Go!</button>
+			  </span>
+				<input type="text" class="form-control" id="inputURL">
+			</div><!-- /input-group -->
+		  </div><!-- /.col-lg-6 -->
+		</div>
+	</div>
+ </body>
+</html>

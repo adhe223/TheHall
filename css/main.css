@@ -1,0 +1,54 @@
+html, body {
+	height: 100%;
+	width: 100%;
+}
+
+body {
+	min-height: 100%;
+	min-width: 100%;
+	background-image: url("/TheHall/img/hall.jpg");
+	background-size: 100% 100%;
+	background-repeat: no-repeat;
+}
+
+.top-bar {
+	display: inline-block;
+	background-color: #333333;
+	padding: 2px;
+	opacity: 0.95;
+	width: 100%
+}
+
+.center-box {
+	background-color: #333333;
+	width: 50%;
+	height: 10%;
+	margin-top: 12%;
+	margin-left: 24%;
+	opacity: 0.95;
+	border: 2px solid;
+	padding: 9px;
+    border-radius: 16px;
+}
+
+.center-box h4 {
+	color: white;
+	text-align: center;
+}
+
+.dark .active a,
+.dark .active a:hover {
+    background-color: #1F1F1F !important;
+}'
+
+.nav-pills > .active > a, .nav-pills > li.active > a:hover {
+    background-color: #1F1F1F !important;
+}
+
+.nav-pills a:hover {
+    background-color: #1F1F1F !important;
+}
+
+.nav a {
+	color: white;
+}
