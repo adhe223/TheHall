@@ -22,6 +22,9 @@ function disablePills() {
 	document.getElementById("standingsAnchor").href="javascript:";
 	document.getElementById("seasonsAnchor").href="javascript:";
 	document.getElementById("advancedAnchor").href="javascript:";
+	
+	//Show the url entry box
+	$("#center-box").show();
 }
 
 function enablePills() {
@@ -33,6 +36,9 @@ function enablePills() {
 	document.getElementById("standingsAnchor").href="/TheHall/standings.html";
 	document.getElementById("seasonsAnchor").href="/TheHall/seasons.html";
 	document.getElementById("advancedAnchor").href="/TheHall/advanced.html";
+	
+	//Hide the url entry screen
+	$("#center-box").hide();
 }
 
 function clearSite() {
