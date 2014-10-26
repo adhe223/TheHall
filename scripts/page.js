@@ -13,6 +13,7 @@ $(document).ready(function() {
 	}
 });
 
+//If no site is selected, do this
 function disablePills() {
 	$("#standings").addClass("disabled");
 	$("#seasons").addClass("disabled");
@@ -24,9 +25,10 @@ function disablePills() {
 	document.getElementById("advancedAnchor").href="javascript:";
 	
 	//Show the url entry box
-	$("#center-box").show();
+	$("#center-box").show(900);
 }
 
+//If site is selected, do this
 function enablePills() {
 	$("#standings").removeClass("disabled");
 	$("#seasons").removeClass("disabled");
@@ -38,7 +40,7 @@ function enablePills() {
 	document.getElementById("advancedAnchor").href="/TheHall/advanced.html";
 	
 	//Hide the url entry screen
-	$("#center-box").hide();
+	$("#center-box").hide(900);
 }
 
 function clearSite() {
