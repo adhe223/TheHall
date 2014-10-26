@@ -8,7 +8,7 @@ body {
 	min-width: 100%;
 	background-image: url("/TheHall/img/hall.jpg");
 	background-size: 100% 100%;
-	background-repeat: no-repeat;
+	background-repeat: repeat-y;
 }
 
 .top-bar {
@@ -34,6 +34,22 @@ body {
 .center-box h4 {
 	color: white;
 	text-align: center;
+}
+
+.results-box {
+	background-color: #333333;
+	width: 88%;
+	height: 500px;
+	margin-top: 1%;
+	margin-left: 6%;
+	opacity: 0.95;
+	border: 2px solid;
+	padding: 9px;
+    border-radius: 16px;
+}
+
+.results-box p {
+	color: white;
 }
 
 .dark .active a,
