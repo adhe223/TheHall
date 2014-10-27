@@ -14,7 +14,15 @@ function requestCrossDomain() {
 	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
 	
 	//New way to load and manipulate
+	//Load into hidden element
+	$("#league-teams").load(yql);
 	
+	//Convert the loaded data into string
+	var htmltext = $('<div>').append($('#league-teams').clone()).remove().html();
+	
+	$("#league-text").html(htmltext);
+	
+	alert("loaded");
 	
 	//Old way
 	//$("#results").load(yql);
