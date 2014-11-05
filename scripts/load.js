@@ -14,6 +14,7 @@ function requestCrossDomain() {
 	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
 	
 	//New way to load and manipulate
+<<<<<<< HEAD
 	$("#back-results").load(yql, function() {
 		var names = [];
 		var temp;
@@ -34,6 +35,17 @@ function requestCrossDomain() {
 		//Store the data into local storage
 		arrayToLocal(names, "teamNames");
 	});
+=======
+	//Load into hidden element
+	$("#league-teams").load(yql);
+	
+	//Convert the loaded data into string
+	var htmltext = $('<div>').append($('#league-teams').clone()).remove().html();
+	
+	$("#league-text").html(htmltext);
+	
+	alert("loaded");
+>>>>>>> origin/master
 	
 	//Old way
 	//$("#results").load(yql);
