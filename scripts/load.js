@@ -14,7 +14,26 @@ function requestCrossDomain() {
 	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
 	
 	//New way to load and manipulate
-	
+	$("#back-results").load(yql, function() {
+		var names = [];
+		var temp;
+		var charIndex;
+		
+		//Get the team names
+		$("#back-results a").each(function(index) {
+			temp = $(this).html();
+			
+			//Parse out the extra span element
+			charIndex = temp.indexOf("<");
+			temp = temp.substring(0,charIndex);
+			names[index] = temp.trim();
+			
+			alert(names[index]);
+		});
+		
+		//Store the data into local storage
+		arrayToLocal(names, "teamNames");
+	});
 	
 	//Old way
 	//$("#results").load(yql);
@@ -30,4 +49,12 @@ function requestCrossDomain() {
 	
 	//Enable the results boxes
 	showResults();
+}
+
+function localToArray(key) {
+	return JSON.parse(localStorage[key]);
+}
+
+function arrayToLocal(arr, key) {
+	localStorage.setItem(key, JSON.stringify(arr));
 }

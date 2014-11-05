@@ -52,6 +52,10 @@ body {
 	color: white;
 }
 
+#back-results {
+	display: none;
+}
+
 .dark .active a,
 .dark .active a:hover {
     background-color: #1F1F1F !important;
