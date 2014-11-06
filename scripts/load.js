@@ -1,3 +1,11 @@
+//ESPN URLs, replace the space character with leagueID
+var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=2014"
+
+function load() {
+	requestCrossDomain();
+	loadWL();
+}
+
 function requestCrossDomain() {
 	var addr = document.getElementById("inputURL").value;
 
@@ -7,8 +15,13 @@ function requestCrossDomain() {
 		return false;
 	}
 	
-	//Set the address in local storage
-	localStorage.setItem("leagueurl", addr);
+	//Set leagueurl in local storage
+	localStorage.setItem("leagueURL", addr);
+	
+	//Set the leagueID in local storage
+	var n = addr.indexOf("leagueId=") + 9;
+	var amp = addr.indexOf("&",n);
+	localStorage.setItem("leagueID", addr.substring(n, amp));
 	
 	//Add '#games-tabs1' so that only the section with the teams is returned from yql query
 	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
@@ -35,12 +48,6 @@ function requestCrossDomain() {
 		arrayToLocal(names, "teamNames");
 	});
 	
-	//Old way
-	//$("#results").load(yql);
-	//$("#results").hide()		//Should find better way to do this. Just loading to manipulate later
-	//Parse out items
-	//var html = $("#games-tabs1").html()
-	
 	//Hide the URL entry box
 	hideURL(900);
 	
@@ -57,4 +64,14 @@ function localToArray(key) {
 
 function arrayToLocal(arr, key) {
 	localStorage.setItem(key, JSON.stringify(arr));
+}
+
+function loadWL() {
+	var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
+
+	//Add '#games-tabs1' so that only the section with the teams is returned from yql query
+	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #games-tabs1";
+	
+	//New way to load and manipulate
+	$("#back-results").load(yql, function() {
 }
