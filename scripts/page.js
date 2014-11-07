@@ -32,7 +32,7 @@ $(document).ready(function() {
 	});
 	
 	//Disable UI tabs if address is not set
-	if (localStorage.getItem("leagueurl").length == 0) {
+	if (localStorage.getItem("leagueurl") === null) {
 		clearSite();
 	} else {
 		hideURL(0);
@@ -98,9 +98,9 @@ function scrollTo(elementScroll) {
 }
 
 function clearSite() {
-	localStorage.setItem("leagueurl", "");
 	changeActiveTab(localStorage.getItem("activetab"), "#home-nav");
 	hideResults();
 	disablePills();
+	localStorage.clear();
 	showURL(900);
 }

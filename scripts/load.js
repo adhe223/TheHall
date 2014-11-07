@@ -25,10 +25,10 @@ function requestCrossDomain() {
 	localStorage.setItem("leagueID", addr.substring(n, amp));
 	
 	//Add '#games-tabs1' so that only the section with the teams is returned from yql query
-	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
+	var yqlLeague = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
 	
 	//New way to load and manipulate
-	$("#back-results").load(yql, function() {
+	$("#back-results").load(yqlLeague, function() {
 		var names = [];
 		var temp;
 		var charIndex;
@@ -67,19 +67,46 @@ function arrayToLocal(arr, key) {
 
 function loadWL() {
 	var back = $("#back-results");
+	
+	//Will need to do the rest for each year of the league history
 	var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
 	standingsURL = standingsURL.replace(",", CURRYEAR);
 
-	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
+	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
 	
 	//Load into the hidden pane
-	back.empty();
-	back.load(yql, function() {
+	var wArr = [];
+	var lArr = [];
+	var dArr = [];
+	var id;
+	back.html("");
+	back.load(yqlStand, function() {
 		$(this).html($("#back-results tr .tableBody"));
-		alert("parsed!");
+		
+		//HEADS UP: IN THESE ARRAYS, 0 AND 7 WILL BE NULL BECAUSE NO TEAMS HAVE THESE IDS
+		
+		//Now traverse the back pane and store info
+		$("#back-results > .tableBody a").closest("tr").each(function(index) {	//This iterates over the the tr elements that are container for the team standings info
+			id = urlToID($(this).find("a").attr('href'));										//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
+			wArr[id] = $(':nth-child(2)', this).text().trim();									//This is the number of wins
+			lArr[id] = $(':nth-child(3)', this).text().trim();									//This is the number of losses
+			dArr[id] = $(':nth-child(4)', this).text().trim();									//This is the number of draws
+		});
+		
+		//Store the info into localStorage
+		arrayToLocal(wArr, "wins");
+		arrayToLocal(lArr, "losses");
+		arrayToLocal(dArr, "draws");
 	});
-	
-	//Now traverse the back pane and load in the info
-	
-	
+}
+
+//Converts a team url to the team id
+function urlToID (url) {
+	var i;
+	var j;
+	var id;
+	i = url.indexOf("teamId=");
+	j = url.indexOf("&",i);
+	id = url.substring(i+7, j);
+	return id;
 }
