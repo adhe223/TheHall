@@ -1,6 +1,5 @@
-//ESPN URLs, replace the space character with leagueID and the comma with the year
-var CURRYEAR="2014";
-var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
+//ESPN URLs, replace the space character with leagueID
+var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=2014"
 
 function load() {
 	requestCrossDomain();
@@ -41,6 +40,8 @@ function requestCrossDomain() {
 			charIndex = temp.indexOf("<");
 			temp = temp.substring(0,charIndex);
 			names[index] = temp.trim();
+			
+			alert(names[index]);
 		});
 		
 		//Store the data into local storage
@@ -66,20 +67,11 @@ function arrayToLocal(arr, key) {
 }
 
 function loadWL() {
-	var back = $("#back-results");
 	var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
-	standingsURL = standingsURL.replace(",", CURRYEAR);
 
-	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
+	//Add '#games-tabs1' so that only the section with the teams is returned from yql query
+	var yql = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #games-tabs1";
 	
-	//Load into the hidden pane
-	back.empty();
-	back.load(yql, function() {
-		$(this).html($("#back-results tr .tableBody"));
-		alert("parsed!");
-	});
-	
-	//Now traverse the back pane and load in the info
-	
-	
+	//New way to load and manipulate
+	$("#back-results").load(yql, function() {
 }

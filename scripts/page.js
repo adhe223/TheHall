@@ -44,7 +44,6 @@ function changeActiveTab(oldTabID, newTabID) {
 	$(newTabID).addClass("active");
 	
 	localStorage.setItem("activetab", newTabID);
-	localStorage.setItem("activetab", newTabID);
 }
 
 //If no site is selected, do this
