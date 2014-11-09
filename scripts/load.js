@@ -5,6 +5,7 @@ var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 function load() {
 	requestCrossDomain();
 	loadWL();
+	//JSONPTesting();
 }
 
 function requestCrossDomain() {
@@ -68,35 +69,101 @@ function arrayToLocal(arr, key) {
 function loadWL() {
 	var back = $("#back-results");
 	
-	//Will need to do the rest for each year of the league history
+	//Generate data arrays and store in localStorage
+	var wArr = [];
+	var lArr = [];
+	var dArr = [];
+	arrayToLocal(wArr, "wins");
+	arrayToLocal(wArr, "losses");
+	arrayToLocal(wArr, "draws");
+	
+	var numYears;
+	
+	back.html("");
+	
+	//First load the number of years, then wait and execute the rest
 	var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
 	standingsURL = standingsURL.replace(",", CURRYEAR);
 
 	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
+	var request = back.load(yqlStand);
+	
+	back.load(yqlStand, function() {
+		//Parse the number of years the league has been active
+		numYears = $("select > option").length;		//Counts the years available to select
+
+		//Initialize the array/queue we will use to store the URLS
+		var urlQ = [];
+		var count;
+		var year;
+		
+		for (count = 0; count < numYears; count++) {
+			//Calculate year to load
+			year = CURRYEAR - count;
+		
+			//Generate URL for the year
+			var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
+			standingsURL = standingsURL.replace(",", year);
+			var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
+			
+			//Store the year in our queue implementation
+			urlQ.push(yqlStand);
+		}
+		
+		loadParseStandings(urlQ);
+	});
+}
+
+function loadParseStandings(urlQueue) {
+	var url = urlQueue.pop();
+
+	//Base case to stop recurse
+	if (url === 'undefined') {
+		return;
+	}
 	
 	//Load into the hidden pane
-	var wArr = [];
-	var lArr = [];
-	var dArr = [];
 	var id;
+	var back = $("#back-results");
+	
 	back.html("");
-	back.load(yqlStand, function() {
+	back.load(url, function() {			
+		//Narrow to only the elements we need
 		$(this).html($("#back-results tr .tableBody"));
-		
-		//HEADS UP: IN THESE ARRAYS, 0 AND 7 WILL BE NULL BECAUSE NO TEAMS HAVE THESE IDS
 		
 		//Now traverse the back pane and store info
 		$("#back-results > .tableBody a").closest("tr").each(function(index) {	//This iterates over the the tr elements that are container for the team standings info
 			id = urlToID($(this).find("a").attr('href'));										//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
-			wArr[id] = $(':nth-child(2)', this).text().trim();									//This is the number of wins
-			lArr[id] = $(':nth-child(3)', this).text().trim();									//This is the number of losses
-			dArr[id] = $(':nth-child(4)', this).text().trim();									//This is the number of draws
+			
+			//Retrieve the data arrays
+			var wArr = localToArray("wins");
+			var lArr = localToArray("losses");
+			var dArr = localToArray("draws");
+			
+			//If the array value is undefined we have to initialize it. If undefined in one, will be in all
+			if (typeof wArr[id] == 'undefined') {
+				wArr[id] = 0;
+				lArr[id] = 0;
+				dArr[id] = 0;
+			}
+			
+			wArr[id] = wArr[id] + parseInt($(':nth-child(2)', this).text().trim(),10);									//This is the number of wins
+			lArr[id] = lArr[id] + parseInt($(':nth-child(3)', this).text().trim(), 10);									//This is the number of losses
+			dArr[id] = dArr[id] + parseInt($(':nth-child(4)', this).text().trim(), 10);									//This is the number of draws
+			
+			//Save the arrays
+			arrayToLocal(wArr, "wins");
+			arrayToLocal(lArr, "losses");
+			arrayToLocal(dArr, "draws");
+			
+			//If last year, then display results
+			if (urlToYear(url) == CURRYEAR) {
+				displayStandings(id);
+			}
 		});
 		
-		//Store the info into localStorage
-		arrayToLocal(wArr, "wins");
-		arrayToLocal(lArr, "losses");
-		arrayToLocal(dArr, "draws");
+		//Recursively call on the next element
+		loadParseStandings(urlQueue);
 	});
 }
 
@@ -109,4 +176,37 @@ function urlToID (url) {
 	j = url.indexOf("&",i);
 	id = url.substring(i+7, j);
 	return id;
+}
+
+//Converts a team url to the season year
+function urlToYear (url) {
+	var i;
+	var year;
+	i = url.indexOf("seasonId%3D");
+	year = url.substr(i+11, 4);
+	return year;
+}
+
+function JSONPTesting() {
+// Using YQL and JSONP
+$.ajax({
+    url: "http://query.yahooapis.com/v1/public/yql",
+ 
+    // the name of the callback parameter, as specified by the YQL service
+    jsonp: "callback",
+ 
+    // tell jQuery we're expecting JSONP
+    dataType: "jsonp",
+ 
+    // tell YQL what we want and that we want JSON
+    data: {
+        format: "json"
+    },
+ 
+    // work with the response
+    success: function( response ) {
+		alert("loaded");
+        console.log( response ); // server response
+    }
+});
 }
