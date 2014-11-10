@@ -5,7 +5,6 @@ var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 function load() {
 	requestCrossDomain();
 	loadWL();
-	//JSONPTesting();
 }
 
 function requestCrossDomain() {
@@ -187,26 +186,21 @@ function urlToYear (url) {
 	return year;
 }
 
-function JSONPTesting() {
-// Using YQL and JSONP
-$.ajax({
-    url: "http://query.yahooapis.com/v1/public/yql",
- 
-    // the name of the callback parameter, as specified by the YQL service
-    jsonp: "callback",
- 
-    // tell jQuery we're expecting JSONP
-    dataType: "jsonp",
- 
-    // tell YQL what we want and that we want JSON
-    data: {
-        format: "json"
-    },
- 
-    // work with the response
-    success: function( response ) {
-		alert("loaded");
-        console.log( response ); // server response
-    }
-});
+function MatchIDOwner (id) {
+	var lookupArr;
+
+	//If the ID lookup exists, load it
+	if (localStorage.getItem("idlookup") !== null) {
+		lookupArr = localToArray("idlookup");
+	} else {
+		lookupArr = [];
+	}
+	
+	//Parse the name associated with the given id in the html
+	
+	//If this differs what is currently in the array, assign a new ID for that player
+	
+	
+	
+	return id;
 }
