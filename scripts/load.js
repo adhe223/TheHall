@@ -131,7 +131,6 @@ function loadParseStandings(urlQueue) {
 		//Narrow to only the elements we need
 		$(this).html($("#back-results tr .tableBody"));
 		
-		//Now traverse the back pane and store info
 		$("#back-results > .tableBody a").closest("tr").each(function(index) {	//This iterates over the the tr elements that are container for the team standings info
 			id = urlToID($(this).find("a").attr('href'));										//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
 			
@@ -139,7 +138,7 @@ function loadParseStandings(urlQueue) {
 			name = titleToName($(this).find("a").attr('title'));
 			
 			//Get the true id by matching name and id
-			id = MatchIDOwner(id,name);
+			id = matchIDOwner(id,name);
 			
 			//Retrieve the data arrays
 			var wArr = localToArray("wins");
@@ -162,9 +161,9 @@ function loadParseStandings(urlQueue) {
 			arrayToLocal(lArr, "losses");
 			arrayToLocal(dArr, "draws");
 			
-			//If last year, then display results
-			if (urlToYear(url) == CURRYEAR) {
-				displayStandings(id);
+			//If last year and last iter, then display results
+			if (urlToYear(url) == CURRYEAR && index == $("#back-results > .tableBody a").closest("tr").length - 1) {
+				displayWins();
 			}
 		});
 		
@@ -203,18 +202,18 @@ function urlToYear (url) {
 	return year;
 }
 
-function MatchIDOwner (id, name) {
+function matchIDOwner (id, name) {
 	var lookupArr;
 
 	//If the ID lookup exists, load it
-	if (localStorage.getItem("idlookup") !== null) {
-		lookupArr = localToArray("idlookup");
+	if (localStorage.getItem("lookupArr") !== null) {
+		lookupArr = localToArray("lookupArr");
 	} else {
 		lookupArr = [];
 	}
 	
 	//If this differs what is currently in the array, assign a new ID for that player
-	if (typeof lookupArr[id] != 'undefined') {
+	if (typeof lookupArr[id] != 'undefined' && lookupArr[id] != null) {
 		if (lookupArr[id] !== name) {
 			//Need to assign a new ID to this person and save the mapping
 			id = lookupArr.length;
