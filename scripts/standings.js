@@ -8,19 +8,21 @@ function displayWins() {
 	
 	for (i = 0; i < wArr.length; i++) {
 		if (wArr[i] != null && wArr[i] != 'undefined') {
-			name = lookupArr[i];
+			ownerName = lookupArr[i];
 			
-			if (!(name in wins)) {
-				wins[name] = 0;
+			var nameIndex = isInArr(ownerName, wins);
+			if (nameIndex == -1) {
+				wins.push({ name: ownerName, val: 0});
+				nameIndex = wins.length - 1;
 			}
-			wins[name] = wins[name] + wArr[i]; 
+			wins[nameIndex].val = wins[nameIndex].val + wArr[i]; 
 		}
 	}
 	
 	//Sort the results
 	wins.sort(function(a,b) {
-		if (wins[a] < wins[b]) { return -1; }
-		if (wins[a] < wins[b]) { return 1; }
+		if (a.val > b.val) { return -1; }
+		if (a.val < b.val) { return 1; }
 		return 0;
 	});
 	
@@ -31,11 +33,11 @@ function displayWins() {
 		},
 		axisY:{
 			labelFontSize: 20,
-			labelAngle: 50
+			labelAngle: 60
 		},
 		axisX:{
 			labelFontSize: 20,
-			labelAngle: 50
+			labelAngle: 60
 		},
 		height: 600
 	});
@@ -43,9 +45,8 @@ function displayWins() {
 	//Dynamically set the chart dataseries
 	winsChart.options.data = [];
 	var winsDataPoints = [];
-	for (var index in wins) {
-		winsDataPoints.push({label: index, y: wins[index]});
-		//winString = winString + "<p>" + index + " wins: " + wins[index] + "<br>";
+	for (var index=0; index < wins.length; index++) {
+		winsDataPoints.push({label: wins[index].name, y: wins[index].val});
 	}
 	
 	winsChart.options.data = [{
@@ -54,9 +55,14 @@ function displayWins() {
 	}
 	]
 
-	//Set the html
-	//$("#standings-box").append(winString);
-
 	//Display the chart
     winsChart.render();
+}
+
+function isInArr(name, arr) {
+	for (var i = 0; i < arr.length; i++) {
+		if (arr[i].name == name) {return i;}
+	}
+	
+	return -1;
 }
