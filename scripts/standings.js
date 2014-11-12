@@ -10,7 +10,7 @@ function displayWins() {
 		if (wArr[i] != null && wArr[i] != 'undefined') {
 			name = lookupArr[i];
 			
-			if (wins[name] == 'undefined') {
+			if (!(name in wins)) {
 				wins[name] = 0;
 			}
 			wins[name] = wins[name] + wArr[i]; 
