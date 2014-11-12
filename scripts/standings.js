@@ -17,13 +17,46 @@ function displayWins() {
 		}
 	}
 	
-	//Generate string to display
-	var winString;
+	//Sort the results
+	wins.sort(function(a,b) {
+		if (wins[a] < wins[b]) { return -1; }
+		if (wins[a] < wins[b]) { return 1; }
+		return 0;
+	});
 	
+	//Generate chart to display
+	var winsChart = new CanvasJS.Chart("wins-section", {
+		title:{
+			text: "Wins"              
+		},
+		axisY:{
+			labelFontSize: 20,
+			labelAngle: 50
+		},
+		axisX:{
+			labelFontSize: 20,
+			labelAngle: 50
+		},
+		height: 600
+	});
+	
+	//Dynamically set the chart dataseries
+	winsChart.options.data = [];
+	var winsDataPoints = [];
 	for (var index in wins) {
-		winString = winString + "<p>" + index + " wins: " + wins[index] + "<br>";
+		winsDataPoints.push({label: index, y: wins[index]});
+		//winString = winString + "<p>" + index + " wins: " + wins[index] + "<br>";
 	}
+	
+	winsChart.options.data = [{
+		type: "column",
+		dataPoints: winsDataPoints
+	}
+	]
 
 	//Set the html
-	$("#standings-box").append(winString);
+	//$("#standings-box").append(winString);
+
+	//Display the chart
+    winsChart.render();
 }
