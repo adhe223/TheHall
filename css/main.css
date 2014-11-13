@@ -39,13 +39,18 @@ body {
 .results-box {
 	background-color: #333333;
 	width: 88%;
-	height: 1000px;
-	margin-top: 1%;
+	height: 1045px;
+	margin-top: 75px;
 	margin-left: 6%;
 	opacity: 0.95;
 	border: 2px solid;
-	padding: 9px;
+	padding: 15px;
     border-radius: 16px;
+}
+
+#losses-section {
+	position: relative;
+	top: 510px;
 }
 
 .results-box p {

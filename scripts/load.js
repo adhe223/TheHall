@@ -163,7 +163,8 @@ function loadParseStandings(urlQueue) {
 			
 			//If last year and last iter, then display results
 			if (urlToYear(url) == CURRYEAR && index == $("#back-results > .tableBody a").closest("tr").length - 1) {
-				displayWins();
+				var wlArr = [];
+				displayStandings(wlArr);
 			}
 		});
 		
