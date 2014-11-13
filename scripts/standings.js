@@ -28,16 +28,26 @@ function displayWins() {
 	
 	//Generate chart to display
 	var winsChart = new CanvasJS.Chart("wins-section", {
+		backgroundColor: "#282824",
+		colorSet: "darkYellow",
 		title:{
-			text: "Wins"              
+			text: "Wins",
+			fontColor: "#E6E272"			
 		},
 		axisY:{
+			interlacedColor: "#1C1C19",
 			labelFontSize: 20,
-			labelAngle: 60
+			labelAngle: 60,
+			tickColor: "#4A4A43",
+			gridColor: "#4A4A43"
 		},
 		axisX:{
 			labelFontSize: 20,
-			labelAngle: 60
+			labelAngle: 60,
+			tickColor: "#4A4A43"
+		},
+		toolTip: {
+			borderColor: "#1C1C19"
 		},
 		height: 600
 	});

@@ -37,6 +37,13 @@ $(document).ready(function() {
 	} else {
 		hideURL(0);
 	}
+	
+	//Set chart colorsets
+	CanvasJS.addColorSet("darkYellow",
+		[
+		"#F3EB00",
+		"#858226"
+		]);
 });
 
 function changeActiveTab(oldTabID, newTabID) {
