@@ -7,14 +7,14 @@ var darkChart = {
 		},
 		axisY:{
 			interlacedColor: "#1C1C19",
-			labelFontSize: 20,
+			labelFontSize: 18,
 			labelAngle: 60,
 			tickColor: "#4A4A43",
 			gridColor: "#4A4A43"
 		},
 		axisX:{
-			labelFontSize: 20,
-			labelAngle: 60,
+			labelFontSize: 18,
+			labelAngle: 70,
 			tickColor: "#4A4A43"
 		},
 		toolTip: {
@@ -25,8 +25,9 @@ var darkChart = {
 
 //wlArr used to hold data for WLs so we can do WL% easily
 function displayStandings(wlArr) {
-	displayWins(wlArr);
-	displayLosses(wlArr);
+	wlArr = displayWins(wlArr);
+	wlArr = displayLosses(wlArr);
+	displayWLP(wlArr);
 }
 
 //Loop over wins array and use match ID to print each
@@ -78,7 +79,8 @@ function displayWins(wlArr) {
     winsChart.render();
 	
 	//Set wlArr
-	wlArr = wins;
+	wlArr = wins.slice(0);
+	return wlArr;
 }
 
 function displayLosses(wlArr) {
@@ -130,7 +132,7 @@ function displayLosses(wlArr) {
 	
 	//Add to wlArr
 	var nameIndex;
-	for (var index = 0; i < losses.length; i++) {
+	for (var index = 0; index< losses.length; index++) {
 		nameIndex = isInArr(losses[index].key, wlArr);
 		
 		//Matched the person, add them
@@ -138,6 +140,50 @@ function displayLosses(wlArr) {
 			wlArr[nameIndex].losses = losses[index].val;
 		}
 	}
+	
+	return wlArr;
+}
+
+function displayWLP(wlArr) {
+	//Generate chart to display.
+	var wpChart = new CanvasJS.Chart("wl-section", darkChart);
+	wpChart.options.title.text = "Win Percentage";
+	
+	//Dynamically set the chart dataseries
+	wpChart.options.data = [];
+	var wpDataPoints = [];
+	
+	//First need to calculate wp
+	for (var key in wlArr) {
+		if (wlArr.hasOwnProperty(key)) {
+			var wp = (wlArr[key].val/(wlArr[key].val + wlArr[key].losses));
+			wp = +wp.toFixed(3);
+			wlArr[key].wp = wp;
+		}
+	}
+	
+	//Sort by wp
+	wlArr.sort(function(a,b) {
+		if (a.wp > b.wp) {return -1; }
+		if (a.wp < b.wp) {return 1; }
+		return 0;
+	});
+	
+	//Have to loop again to add data points
+	for (var key in wlArr) {
+		if (wlArr.hasOwnProperty(key)) {
+			wpDataPoints.push({label: wlArr[key].key, y: wlArr[key].wp});
+		}
+	}
+	
+	wpChart.options.data = [{
+		type: "column",
+		dataPoints: wpDataPoints
+	}
+	]
+
+	//Display the chart
+    wpChart.render();
 }
 
 function isInArr(key, arr) {

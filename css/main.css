@@ -39,7 +39,7 @@ body {
 .results-box {
 	background-color: #333333;
 	width: 88%;
-	height: 1045px;
+	height: 1570px;
 	margin-top: 75px;
 	margin-left: 6%;
 	opacity: 0.95;
@@ -51,6 +51,11 @@ body {
 #losses-section {
 	position: relative;
 	top: 510px;
+}
+
+#wl-section {
+	position: relative;
+	top: 1020px;
 }
 
 .results-box p {
