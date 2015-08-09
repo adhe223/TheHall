@@ -3,6 +3,7 @@ var CURRYEAR="2014";
 var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
 var owners = {};
+var leagueSeasons = {};
 
 function load() {
 	requestCrossDomain();
@@ -96,11 +97,11 @@ function loadWL() {
 	var finalStandingsURL = FINAL_STANDINGS.replace(" ", localStorage["leagueID"]);
 	finalStandingsURL = finalStandingsURL.replace(",", CURRYEAR);
 	
-	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell"; //Try just getting the select box here for years in the future
+	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #seasonHistoryMenu";
 	
 	back.load(yqlStand, function() {
 		//Parse the number of years the league has been active
-		numYears = $("select > option").length;		//Counts the years available to select
+		numYears = $("option").length;		//Counts the years available to select
 		localStorage.setItem("numYears", numYears);
 
 		//Initialize the array/queue we will use to store the URLS
@@ -132,8 +133,10 @@ function loadParseStandings(urlQueue) {
 	if (typeof(url) === 'undefined') {
 		//We have gone through every year, now show the results!
 		var wlArr = [];
-		displayStandings(wlArr);
+		localStorage.setItem("owners", JSON.stringify(owners));
+		localStorage.setItem("leagueSeasons", JSON.stringify(leagueSeasons));
 		
+		displayStandings(wlArr);
 		return;
 	}
 	
@@ -152,7 +155,7 @@ function loadParseStandings(urlQueue) {
 		var pfArr = localToArray("points_for");
 		var paArr = localToArray("points_against");
 		
-		$(".sortableRow").each(function() {
+		$(".sortableRow").each(function(index) {
 			//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
 			id = urlToID($(this).find("a").attr('href'));
 			
@@ -167,6 +170,11 @@ function loadParseStandings(urlQueue) {
 			}
 			owners[name].seasons[year] = new OwnerSeason(year);
 			
+			//Save the season info in a season object as well
+			if (typeof(leagueSeasons[year]) === 'undefined') {
+					leagueSeasons[year] = new LeagueSeason(year);
+			}
+			
 			//Get the true id by matching name and id
 			id = matchIDOwner(id,name);
 			
@@ -177,6 +185,12 @@ function loadParseStandings(urlQueue) {
 				dArr[id] = 0;
 				pfArr[id] = 0;
 				paArr[id] = 0;
+			}
+			
+			//Save if champion (first row in table)
+			if (index == 0) {
+				owners[name].championships = owners[name].championships + 1;
+				leagueSeasons[year].champion = name;
 			}
 			
 			var wlString = $(this).find(".sortableREC").text().trim();
@@ -208,6 +222,7 @@ function loadParseStandings(urlQueue) {
 			pfArr[id] = pfArr[id] + yearPF;
 			owners[name].pointsFor = owners[name].pointsFor + yearPF;
 			owners[name].seasons[year].pointsFor = yearPF;
+			leagueSeasons[year].totalPF = leagueSeasons[year].totalPF + yearPF;
 			
 			//Points against
 			var yearPA = parseFloat($(this).find(".sortablePA").text().trim());

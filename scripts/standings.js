@@ -148,7 +148,6 @@ function displayLosses(wlArr) {
 			wlArr[nameIndex].losses = losses[index].val;
 		}
 	}
-	
 	return wlArr;
 }
 

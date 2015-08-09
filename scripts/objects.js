@@ -7,6 +7,7 @@ function Owner(inName) {
 	this.pointsFor = 0.0;
 	this.pointsAgainst = 0.0;
 	this.pointDiff = 0.0;
+	this.championships = 0;
 }
 
 function OwnerSeason(inYear) {
@@ -17,4 +18,10 @@ function OwnerSeason(inYear) {
 	this.pointsFor = 0.0;
 	this.pointsAgainst = 0.0;
 	this.pointDiff = 0.0;
+}
+
+function LeagueSeason(inYear) {
+	this.year = inYear;
+	this.totalPF = 0.0;
+	this.champion = "";
 }
