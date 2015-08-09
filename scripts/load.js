@@ -1,6 +1,7 @@
 //ESPN URLs, replace the space character with leagueID and the comma with the year
 var CURRYEAR="2014";
 var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
+var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
 
 function load() {
 	requestCrossDomain();
@@ -72,9 +73,17 @@ function loadWL() {
 	var wArr = [];
 	var lArr = [];
 	var dArr = [];
+	var pfArr = [];
+	var paArr = [];
+	var wsArr = [];
+	var lsArr = [];
+	
+	//Clear any data that exists there -- Future, cache results and load those
 	arrayToLocal(wArr, "wins");
 	arrayToLocal(wArr, "losses");
 	arrayToLocal(wArr, "draws");
+	arrayToLocal(wArr, "points_for");
+	arrayToLocal(wArr, "points_against");
 	
 	var numYears;
 	
@@ -83,9 +92,12 @@ function loadWL() {
 	//First load the number of years, then wait and execute the rest
 	var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
 	standingsURL = standingsURL.replace(",", CURRYEAR);
-
-	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
-	var request = back.load(yqlStand);
+	
+	//Prepare the URL to retrieve all the data from
+	var finalStandingsURL = FINAL_STANDINGS.replace(" ", localStorage["leagueID"]);
+	finalStandingsURL = finalStandingsURL.replace(",", CURRYEAR);
+	
+	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell"; //Try just getting the select box here for years
 	
 	back.load(yqlStand, function() {
 		//Parse the number of years the league has been active
@@ -101,9 +113,9 @@ function loadWL() {
 			year = CURRYEAR - count;
 		
 			//Generate URL for the year
-			var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
-			standingsURL = standingsURL.replace(",", year);
-			var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell";
+			var finalStandingsURL = FINAL_STANDINGS.replace(" ", localStorage["leagueID"]);
+			finalStandingsURL = finalStandingsURL.replace(",", year);
+			var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + finalStandingsURL + '"') + " #finalRankingsTable";
 			
 			//Store the year in our queue implementation
 			urlQ.push(yqlStand);
@@ -117,7 +129,11 @@ function loadParseStandings(urlQueue) {
 	var url = urlQueue.pop();
 
 	//Base case to stop recurse
-	if (url === 'undefined') {
+	if (typeof(url) === 'undefined') {
+		//We have gone through every year, now show the results!
+		var wlArr = [];
+		displayStandings(wlArr);
+		
 		return;
 	}
 	
@@ -127,12 +143,18 @@ function loadParseStandings(urlQueue) {
 	var back = $("#back-results");
 	
 	back.html("");
-	back.load(url, function() {			
-		//Narrow to only the elements we need
-		$(this).html($("#back-results tr .tableBody"));
+	back.load(url, function() {
+		//Load the point info for the advanced tab
+		//Retrieve the arrays from local
+		var wArr = localToArray("wins");
+		var lArr = localToArray("losses");
+		var dArr = localToArray("draws");
+		var pfArr = localToArray("points_for");
+		var paArr = localToArray("points_against");
 		
-		$("#back-results > .tableBody a").closest("tr").each(function(index) {	//This iterates over the the tr elements that are container for the team standings info
-			id = urlToID($(this).find("a").attr('href'));										//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
+		$(".sortableRow").each(function() {
+			//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
+			id = urlToID($(this).find("a").attr('href'));
 			
 			//Also parse out the name of the owner
 			name = titleToName($(this).find("a").attr('title'));
@@ -140,33 +162,30 @@ function loadParseStandings(urlQueue) {
 			//Get the true id by matching name and id
 			id = matchIDOwner(id,name);
 			
-			//Retrieve the data arrays
-			var wArr = localToArray("wins");
-			var lArr = localToArray("losses");
-			var dArr = localToArray("draws");
-			
 			//If the array value is undefined we have to initialize it. If undefined in one, will be in all
 			if (typeof wArr[id] == 'undefined') {
 				wArr[id] = 0;
 				lArr[id] = 0;
 				dArr[id] = 0;
+				pfArr[id] = 0;
+				paArr[id] = 0;
 			}
 			
-			wArr[id] = wArr[id] + parseInt($(':nth-child(2)', this).text().trim(),10);									//This is the number of wins
-			lArr[id] = lArr[id] + parseInt($(':nth-child(3)', this).text().trim(), 10);									//This is the number of losses
-			dArr[id] = dArr[id] + parseInt($(':nth-child(4)', this).text().trim(), 10);									//This is the number of draws
+			var wlString = $(this).find(".sortableREC").text().trim();
+			var dashLoc = wlString.indexOf("-");
+			wArr[id] = wArr[id] + parseInt(wlString.slice(0, dashLoc), 10);
+			lArr[id] = lArr[id] + parseInt(wlString.slice(dashLoc + 1), 10);
 			
-			//Save the arrays
-			arrayToLocal(wArr, "wins");
-			arrayToLocal(lArr, "losses");
-			arrayToLocal(dArr, "draws");
-			
-			//If last year and last iter, then display results
-			if (urlToYear(url) == CURRYEAR && index == $("#back-results > .tableBody a").closest("tr").length - 1) {
-				var wlArr = [];
-				displayStandings(wlArr);
-			}
+			pfArr[id] = pfArr[id] + parseFloat($(this).find(".sortablePF").text().trim())
+			paArr[id] = paArr[id] + parseFloat($(this).find(".sortablePA").text().trim())
 		});
+		
+		//Save the arrays
+		arrayToLocal(wArr, "wins");
+		arrayToLocal(lArr, "losses");
+		arrayToLocal(dArr, "draws");
+		arrayToLocal(pfArr, "points_for");
+		arrayToLocal(paArr, "points_against");
 		
 		//Recursively call on the next element
 		loadParseStandings(urlQueue);

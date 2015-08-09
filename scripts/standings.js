@@ -18,16 +18,24 @@ var darkChart = {
 			tickColor: "#4A4A43"
 		},
 		toolTip: {
-			borderColor: "#1C1C19"
+			borderColor: "#1C1C19",
+			backgroundColor: "#282824"
 		},
 		height: 500
 };
 
 //wlArr used to hold data for WLs so we can do WL% easily
-function displayStandings(wlArr) {
+function displayStandings(wlArr) {	
+	//Standings
 	wlArr = displayWins(wlArr);
 	wlArr = displayLosses(wlArr);
 	displayWLP(wlArr);
+	
+	//Seasons
+	
+	
+	//Advanced
+	displayPointsFor();
 }
 
 //Loop over wins array and use match ID to print each
