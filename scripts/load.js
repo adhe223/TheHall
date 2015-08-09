@@ -2,6 +2,7 @@
 var CURRYEAR="2014";
 var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
+var owners = {};
 
 function load() {
 	requestCrossDomain();
@@ -75,8 +76,6 @@ function loadWL() {
 	var dArr = [];
 	var pfArr = [];
 	var paArr = [];
-	var wsArr = [];
-	var lsArr = [];
 	
 	//Clear any data that exists there -- Future, cache results and load those
 	arrayToLocal(wArr, "wins");
@@ -160,6 +159,14 @@ function loadParseStandings(urlQueue) {
 			//Also parse out the name of the owner
 			name = titleToName($(this).find("a").attr('title'));
 			
+			var year = urlToYear(url);
+			
+			//Save the season info in an owner object
+			if (typeof(owners[name]) === 'undefined') {
+					owners[name] = new Owner(name);
+			}
+			owners[name].seasons[year] = new OwnerSeason(year);
+			
 			//Get the true id by matching name and id
 			id = matchIDOwner(id,name);
 			
@@ -174,11 +181,44 @@ function loadParseStandings(urlQueue) {
 			
 			var wlString = $(this).find(".sortableREC").text().trim();
 			var dashLoc = wlString.indexOf("-");
-			wArr[id] = wArr[id] + parseInt(wlString.slice(0, dashLoc), 10);
-			lArr[id] = lArr[id] + parseInt(wlString.slice(dashLoc + 1), 10);
 			
-			pfArr[id] = pfArr[id] + parseFloat($(this).find(".sortablePF").text().trim())
-			paArr[id] = paArr[id] + parseFloat($(this).find(".sortablePA").text().trim())
+			//Wins
+			var yearWins = parseInt(wlString.slice(0, dashLoc), 10);
+			wArr[id] = wArr[id] + yearWins;
+			owners[name].wins = owners[name].wins + yearWins;
+			owners[name].seasons[year].wins = yearWins;
+			
+			//Losses
+			var yearLosses = parseInt(wlString.slice(dashLoc + 1), 10);
+			lArr[id] = lArr[id] + yearLosses;
+			owners[name].losses = owners[name].losses + yearLosses;
+			owners[name].seasons[year].losses = yearLosses;
+			
+			//Draws
+			if (wlString.indexOf("-", dashLoc+1) != -1) {
+				dashLoc = wlString.indexOf("-", dashLoc+1);
+				var yearDraws = parseInt(wlString.slice(dashLoc + 1), 10);
+				dArr[id] = dArr[id] + yearDraws;
+				owners[name].draws = owners[name].draws + yearDraws;
+				owners[name].seasons[year].draws = yearDraws;
+			}
+			
+			//Points for
+			var yearPF = parseFloat($(this).find(".sortablePF").text().trim())
+			pfArr[id] = pfArr[id] + yearPF;
+			owners[name].pointsFor = owners[name].pointsFor + yearPF;
+			owners[name].seasons[year].pointsFor = yearPF;
+			
+			//Points against
+			var yearPA = parseFloat($(this).find(".sortablePA").text().trim());
+			paArr[id] = paArr[id] + yearPA;
+			owners[name].pointsAgainst = owners[name].pointsAgainst + yearPA;
+			owners[name].seasons[year].pointsAgainst = yearPA;
+			
+			//Point Differential
+			var yearPD = yearPF - yearPA;
+			owners[name].pointDiff = owners[name].pointDiff + yearPD;
+			owners[name].seasons[year].pointDiff = yearPD;
 		});
 		
 		//Save the arrays - In future, refactor this so we can make all the AJAX calls at once, and then use setTimeout and check if they have all been returned in intervals
