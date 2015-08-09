@@ -97,11 +97,12 @@ function loadWL() {
 	var finalStandingsURL = FINAL_STANDINGS.replace(" ", localStorage["leagueID"]);
 	finalStandingsURL = finalStandingsURL.replace(",", CURRYEAR);
 	
-	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell"; //Try just getting the select box here for years
+	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #maincontainertblcell"; //Try just getting the select box here for years in the future
 	
 	back.load(yqlStand, function() {
 		//Parse the number of years the league has been active
 		numYears = $("select > option").length;		//Counts the years available to select
+		localStorage.setItem("numYears", numYears);
 
 		//Initialize the array/queue we will use to store the URLS
 		var urlQ = [];
@@ -180,7 +181,7 @@ function loadParseStandings(urlQueue) {
 			paArr[id] = paArr[id] + parseFloat($(this).find(".sortablePA").text().trim())
 		});
 		
-		//Save the arrays
+		//Save the arrays - In future, refactor this so we can make all the AJAX calls at once, and then use setTimeout and check if they have all been returned in intervals
 		arrayToLocal(wArr, "wins");
 		arrayToLocal(lArr, "losses");
 		arrayToLocal(dArr, "draws");

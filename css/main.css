@@ -58,6 +58,16 @@ body {
 	top: 1020px;
 }
 
+#pa-section {
+	position: relative;
+	top: 510px;
+}
+
+#pd-section {
+	position: relative;
+	top: 1020px;
+}
+
 .results-box p {
 	color: white;
 }

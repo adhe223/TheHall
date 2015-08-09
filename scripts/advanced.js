@@ -28,6 +28,7 @@ function displayPointsFor() {
 	var points = [];
 	var ownerName;
 	var pfArr = localToArray("points_for");
+	var paArr = localToArray("points_against");
 	var lookupArr = localToArray("lookupArr");
 	var i;
 	
@@ -37,10 +38,12 @@ function displayPointsFor() {
 			
 			var nameIndex = isInArr(ownerName, points);
 			if (nameIndex == -1) {
-				points.push({ key: ownerName, pf: 0});
+				points.push({ key: ownerName, pf: 0, pa: 0, pd: 0, pdp: 0});
 				nameIndex = points.length - 1;
 			}
 			points[nameIndex].pf = points[nameIndex].pf + pfArr[i];
+			points[nameIndex].pa = points[nameIndex].pa + paArr[i];
+			points[nameIndex].pd = points[nameIndex].pd + (points[nameIndex].pf - points[nameIndex].pa);
 		}
 	}
 	
@@ -51,13 +54,14 @@ function displayPointsFor() {
 		return 0;
 	});
 	
-	//Generate chart to display.
+	//Generate points for chart to display.
 	var pfChart = new CanvasJS.Chart("pf-section", darkChart);
 	pfChart.options.title.text = "Points For";
 	
 	//Dynamically set the chart dataseries
 	pfChart.options.data = [];
 	var pfDataPoints = [];
+	var paDataPoints = [];
 	for (var index=0; index < points.length; index++) {
 		pfDataPoints.push({label: points[index].key, y: points[index].pf});
 	}
@@ -68,6 +72,66 @@ function displayPointsFor() {
 	}
 	]
 
-	//Display the chart
+	//Display the pf chart
     pfChart.render();
+	
+	//Now create the pa chart
+	//Sort the results
+	points.sort(function(a,b) {
+		if (a.pa > b.pa) { return -1; }
+		if (a.pa < b.pa) { return 1; }
+		return 0;
+	});
+	
+	//Generate points for chart to display.
+	var paChart = new CanvasJS.Chart("pa-section", darkChart);
+	paChart.options.title.text = "Points Against";
+	
+	//Dynamically set the chart dataseries
+	paChart.options.data = [];
+	var paDataPoints = [];
+	for (var index=0; index < points.length; index++) {
+		paDataPoints.push({label: points[index].key, y: points[index].pa});
+	}
+	
+	paChart.options.data = [{
+		type: "column",
+		dataPoints: paDataPoints
+	}
+	]
+
+	//Display the pa chart
+    paChart.render();
+	
+	//Display the pd chart
+	displayPointDiff(points);
+}
+
+function displayPointDiff(points) {
+	//Sort the results
+	points.sort(function(a,b) {
+		if (a.pd > b.pd) { return -1; }
+		if (a.pd < b.pd) { return 1; }
+		return 0;
+	});
+	
+	//Generate points for chart to display.
+	var pdChart = new CanvasJS.Chart("pd-section", darkChart);
+	pdChart.options.title.text = "Point Differential";
+	
+	//Dynamically set the chart dataseries
+	pdChart.options.data = [];
+	var pdDataPoints = [];
+	for (var index=0; index < points.length; index++) {
+		pdDataPoints.push({label: points[index].key, y: points[index].pd});
+	}
+	
+	pdChart.options.data = [{
+		type: "column",
+		dataPoints: pdDataPoints
+	}
+	]
+
+	//Display the pa chart
+    pdChart.render();
 }
