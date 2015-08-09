@@ -41,21 +41,11 @@ function displayStandings(wlArr) {
 //Loop over wins array and use match ID to print each
 function displayWins(wlArr) {
 	var wins = [];
-	var ownerName;
-	var wArr = localToArray("wins");
-	var lookupArr = localToArray("lookupArr");
-	var i;
 	
-	for (i = 0; i < wArr.length; i++) {
-		if (wArr[i] != null && wArr[i] != 'undefined') {
-			ownerName = lookupArr[i];
-			
-			var nameIndex = isInArr(ownerName, wins);
-			if (nameIndex == -1) {
-				wins.push({ key: ownerName, val: 0});
-				nameIndex = wins.length - 1;
-			}
-			wins[nameIndex].val = wins[nameIndex].val + wArr[i]; 
+	//Use the owner object instead
+	for (var name in owners) {
+		if (owners.hasOwnProperty(name)) {
+			wins.push({key: name, val: owners[name].wins});
 		}
 	}
 	
