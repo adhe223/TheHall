@@ -26,24 +26,10 @@ var darkChart = {
 
 function displayPointsFor() {
 	var points = [];
-	var ownerName;
-	var pfArr = localToArray("points_for");
-	var paArr = localToArray("points_against");
-	var lookupArr = localToArray("lookupArr");
-	var i;
 	
-	for (i = 0; i < pfArr.length; i++) {
-		if (pfArr[i] != null && typeof(pfArr[i]) !== 'undefined') {
-			ownerName = lookupArr[i];
-			
-			var nameIndex = isInArr(ownerName, points);
-			if (nameIndex == -1) {
-				points.push({ key: ownerName, pf: 0, pa: 0, pd: 0, pdp: 0});
-				nameIndex = points.length - 1;
-			}
-			points[nameIndex].pf = points[nameIndex].pf + pfArr[i];
-			points[nameIndex].pa = points[nameIndex].pa + paArr[i];
-			points[nameIndex].pd = points[nameIndex].pd + (points[nameIndex].pf - points[nameIndex].pa);
+	for (var name in owners) {
+		if (owners.hasOwnProperty(name)) {
+			points.push({ key: name, pf: owners[name].pointsFor, pa: owners[name].pointsAgainst, pd: owners[name].pointDiff, pdp: (owners[name].pointDiff / owners[name].seasons.length)});
 		}
 	}
 	

@@ -25,11 +25,11 @@ var darkChart = {
 };
 
 //wlArr used to hold data for WLs so we can do WL% easily
-function displayStandings(wlArr) {	
+function displayStandings() {	
 	//Standings
-	wlArr = displayWins(wlArr);
-	wlArr = displayLosses(wlArr);
-	displayWLP(wlArr);
+	displayWins();
+	displayLosses();
+	displayWLP();
 	
 	//Seasons
 	
@@ -38,8 +38,8 @@ function displayStandings(wlArr) {
 	displayPointsFor();
 }
 
-//Loop over wins array and use match ID to print each
-function displayWins(wlArr) {
+//Loop over wins array and gather data to display
+function displayWins() {
 	var wins = [];
 	
 	//Use the owner object instead
@@ -75,29 +75,14 @@ function displayWins(wlArr) {
 
 	//Display the chart
     winsChart.render();
-	
-	//Set wlArr
-	wlArr = wins.slice(0);
-	return wlArr;
 }
 
-function displayLosses(wlArr) {
+function displayLosses() {
 	var losses = [];
-	var ownerName;
-	var lArr = localToArray("losses");
-	var lookupArr = localToArray("lookupArr");
-	var i;
 	
-	for (i = 0; i < lArr.length; i++) {
-		if (lArr[i] != null && lArr[i] != 'undefined') {
-			ownerName = lookupArr[i];
-			
-			var nameIndex = isInArr(ownerName, losses);
-			if (nameIndex == -1) {
-				losses.push({ key: ownerName, val: 0});
-				nameIndex = losses.length - 1;
-			}
-			losses[nameIndex].val = losses[nameIndex].val + lArr[i]; 
+	for (var name in owners) {
+		if (owners.hasOwnProperty(name)) {
+			losses.push({key: name, val: owners[name].losses});
 		}
 	}
 	
@@ -127,21 +112,12 @@ function displayLosses(wlArr) {
 
 	//Display the chart
     lossesChart.render();
-	
-	//Add to wlArr
-	var nameIndex;
-	for (var index = 0; index< losses.length; index++) {
-		nameIndex = isInArr(losses[index].key, wlArr);
-		
-		//Matched the person, add them
-		if (nameIndex != -1) {
-			wlArr[nameIndex].losses = losses[index].val;
-		}
-	}
-	return wlArr;
 }
 
-function displayWLP(wlArr) {
+function displayWLP() {
+	debugger;
+	var winPercent = [];
+
 	//Generate chart to display.
 	var wpChart = new CanvasJS.Chart("wl-section", darkChart);
 	wpChart.options.title.text = "Win Percentage";
@@ -151,26 +127,26 @@ function displayWLP(wlArr) {
 	var wpDataPoints = [];
 	
 	//First need to calculate wp
-	for (var key in wlArr) {
-		if (wlArr.hasOwnProperty(key)) {
-			var wp = (wlArr[key].val/(wlArr[key].val + wlArr[key].losses));
+	for (var name in owners) {
+		if (owners.hasOwnProperty(name)) {
+			var wp = (owners[name].wins / (owners[name].wins + owners[name].losses + owners[name].draws));
 			wp = +wp.toFixed(3);
-			wlArr[key].wp = wp;
+			winPercent.push({key: name, val: wp});
 		}
 	}
 	
 	//Sort by wp
-	wlArr.sort(function(a,b) {
-		if (a.wp > b.wp) {return -1; }
-		if (a.wp < b.wp) {return 1; }
+	winPercent.sort(function(a,b) {
+		if (a.val > b.val) {return -1; }
+		if (a.val < b.val) {return 1; }
 		return 0;
 	});
 	
-	//Have to loop again to add data points
-	for (var key in wlArr) {
-		if (wlArr.hasOwnProperty(key)) {
-			wpDataPoints.push({label: wlArr[key].key, y: wlArr[key].wp});
-		}
+	//Dynamically set the chart dataseries
+	wpChart.options.data = [];
+	var wpDataPoints = [];
+	for (var index=0; index < winPercent.length; index++) {
+		wpDataPoints.push({label: winPercent[index].key, y: winPercent[index].val});
 	}
 	
 	wpChart.options.data = [{
@@ -181,12 +157,4 @@ function displayWLP(wlArr) {
 
 	//Display the chart
     wpChart.render();
-}
-
-function isInArr(key, arr) {
-	for (var i = 0; i < arr.length; i++) {
-		if (arr[i].key == key) {return i;}
-	}
-	
-	return -1;
 }

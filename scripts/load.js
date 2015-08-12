@@ -70,21 +70,6 @@ function arrayToLocal(arr, key) {
 
 function loadWL() {
 	var back = $("#back-results");
-	
-	//Generate data arrays and store in localStorage
-	var wArr = [];
-	var lArr = [];
-	var dArr = [];
-	var pfArr = [];
-	var paArr = [];
-	
-	//Clear any data that exists there -- Future, cache results and load those
-	arrayToLocal(wArr, "wins");
-	arrayToLocal(wArr, "losses");
-	arrayToLocal(wArr, "draws");
-	arrayToLocal(wArr, "points_for");
-	arrayToLocal(wArr, "points_against");
-	
 	var numYears;
 	
 	back.html("");
@@ -132,11 +117,10 @@ function loadParseStandings(urlQueue) {
 	//Base case to stop recurse
 	if (typeof(url) === 'undefined') {
 		//We have gone through every year, now show the results!
-		var wlArr = [];
 		localStorage.setItem("owners", JSON.stringify(owners));
 		localStorage.setItem("leagueSeasons", JSON.stringify(leagueSeasons));
 		
-		displayStandings(wlArr);
+		displayStandings();
 		return;
 	}
 	
@@ -147,18 +131,8 @@ function loadParseStandings(urlQueue) {
 	
 	back.html("");
 	back.load(url, function() {
-		//Load the point info for the advanced tab
-		//Retrieve the arrays from local
-		var wArr = localToArray("wins");
-		var lArr = localToArray("losses");
-		var dArr = localToArray("draws");
-		var pfArr = localToArray("points_for");
-		var paArr = localToArray("points_against");
 		
 		$(".sortableRow").each(function(index) {
-			//Gives us the teamID of the currently inspected tr. This decides the array location to store at.
-			id = urlToID($(this).find("a").attr('href'));
-			
 			//Also parse out the name of the owner
 			name = titleToName($(this).find("a").attr('title'));
 			
@@ -175,18 +149,6 @@ function loadParseStandings(urlQueue) {
 					leagueSeasons[year] = new LeagueSeason(year);
 			}
 			
-			//Get the true id by matching name and id
-			id = matchIDOwner(id,name);
-			
-			//If the array value is undefined we have to initialize it. If undefined in one, will be in all
-			if (typeof wArr[id] == 'undefined') {
-				wArr[id] = 0;
-				lArr[id] = 0;
-				dArr[id] = 0;
-				pfArr[id] = 0;
-				paArr[id] = 0;
-			}
-			
 			//Save if champion (first row in table)
 			if (index == 0) {
 				owners[name].championships = owners[name].championships + 1;
@@ -198,13 +160,11 @@ function loadParseStandings(urlQueue) {
 			
 			//Wins
 			var yearWins = parseInt(wlString.slice(0, dashLoc), 10);
-			wArr[id] = wArr[id] + yearWins;
 			owners[name].wins = owners[name].wins + yearWins;
 			owners[name].seasons[year].wins = yearWins;
 			
 			//Losses
 			var yearLosses = parseInt(wlString.slice(dashLoc + 1), 10);
-			lArr[id] = lArr[id] + yearLosses;
 			owners[name].losses = owners[name].losses + yearLosses;
 			owners[name].seasons[year].losses = yearLosses;
 			
@@ -212,21 +172,18 @@ function loadParseStandings(urlQueue) {
 			if (wlString.indexOf("-", dashLoc+1) != -1) {
 				dashLoc = wlString.indexOf("-", dashLoc+1);
 				var yearDraws = parseInt(wlString.slice(dashLoc + 1), 10);
-				dArr[id] = dArr[id] + yearDraws;
 				owners[name].draws = owners[name].draws + yearDraws;
 				owners[name].seasons[year].draws = yearDraws;
 			}
 			
 			//Points for
 			var yearPF = parseFloat($(this).find(".sortablePF").text().trim())
-			pfArr[id] = pfArr[id] + yearPF;
 			owners[name].pointsFor = owners[name].pointsFor + yearPF;
 			owners[name].seasons[year].pointsFor = yearPF;
 			leagueSeasons[year].totalPF = leagueSeasons[year].totalPF + yearPF;
 			
 			//Points against
 			var yearPA = parseFloat($(this).find(".sortablePA").text().trim());
-			paArr[id] = paArr[id] + yearPA;
 			owners[name].pointsAgainst = owners[name].pointsAgainst + yearPA;
 			owners[name].seasons[year].pointsAgainst = yearPA;
 			
@@ -235,13 +192,6 @@ function loadParseStandings(urlQueue) {
 			owners[name].pointDiff = owners[name].pointDiff + yearPD;
 			owners[name].seasons[year].pointDiff = yearPD;
 		});
-		
-		//Save the arrays - In future, refactor this so we can make all the AJAX calls at once, and then use setTimeout and check if they have all been returned in intervals
-		arrayToLocal(wArr, "wins");
-		arrayToLocal(lArr, "losses");
-		arrayToLocal(dArr, "draws");
-		arrayToLocal(pfArr, "points_for");
-		arrayToLocal(paArr, "points_against");
 		
 		//Recursively call on the next element
 		loadParseStandings(urlQueue);
