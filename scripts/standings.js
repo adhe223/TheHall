@@ -24,8 +24,7 @@ var darkChart = {
 		height: 500
 };
 
-//wlArr used to hold data for WLs so we can do WL% easily
-function displayStandings() {	
+function displayData() {	
 	//Standings
 	displayWins();
 	displayLosses();
@@ -35,7 +34,9 @@ function displayStandings() {
 	
 	
 	//Advanced
-	displayPointsFor();
+	var points = [];
+	points = displayPoints();
+	displayPointDiff(points);
 }
 
 //Loop over wins array and gather data to display
@@ -115,7 +116,6 @@ function displayLosses() {
 }
 
 function displayWLP() {
-	debugger;
 	var winPercent = [];
 
 	//Generate chart to display.

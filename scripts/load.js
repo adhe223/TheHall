@@ -120,7 +120,7 @@ function loadParseStandings(urlQueue) {
 		localStorage.setItem("owners", JSON.stringify(owners));
 		localStorage.setItem("leagueSeasons", JSON.stringify(leagueSeasons));
 		
-		displayStandings();
+		displayData();
 		return;
 	}
 	

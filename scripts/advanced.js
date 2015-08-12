@@ -24,7 +24,7 @@ var darkChart = {
 		height: 500
 };
 
-function displayPointsFor() {
+function displayPoints() {
 	var points = [];
 	
 	for (var name in owners) {
@@ -89,8 +89,7 @@ function displayPointsFor() {
 	//Display the pa chart
     paChart.render();
 	
-	//Display the pd chart
-	displayPointDiff(points);
+	return points;
 }
 
 function displayPointDiff(points) {
