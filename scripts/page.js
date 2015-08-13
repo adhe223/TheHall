@@ -5,34 +5,34 @@ $(document).ready(function() {
 	//Set up click event handlers
 	//In future refactor these into one function inside click event	
 	$("#home-nav").click(function() {
-		if (localStorage.getItem("leagueurl").length > 0) {
+		if (leagueURL.length > 0) {
 			changeActiveTab(localStorage.getItem("activetab"), "#home-nav");
 		}
 	});
 	
 	$("#standingsAnchor").click(function() {
-		if (localStorage.getItem("leagueurl").length > 0) {
+		if (leagueURL.length > 0) {
 			changeActiveTab(localStorage.getItem("activetab"), "#standings-nav");
 			scrollTo("#standings-box");
 		}
 	});
 	
 	$("#seasonsAnchor").click(function() {
-		if (localStorage.getItem("leagueurl").length > 0) {
+		if (leagueURL.length > 0) {
 			changeActiveTab(localStorage.getItem("activetab"), "#seasons-nav");
 			scrollTo("#seasons-box");
 		}
 	});
 	
 	$("#advancedAnchor").click(function() {
-		if (localStorage.getItem("leagueurl").length > 0) {
+		if (leagueURL.length > 0) {
 			changeActiveTab(localStorage.getItem("activetab"), "#advanced-nav");
 			scrollTo("#advanced-box");
 		}
 	});
 	
 	//Disable UI tabs if address is not set
-	if (localStorage.getItem("leagueurl") === null) {
+	if (leagueURL === null) {
 		clearSite();
 	} else {
 		hideURL(0);

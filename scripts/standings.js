@@ -25,13 +25,15 @@ var darkChart = {
 };
 
 function displayData() {	
+	debugger;
 	//Standings
 	displayWins();
 	displayLosses();
 	displayWLP();
 	
 	//Seasons
-	
+	displayChamps();
+	displaySuperlatives();
 	
 	//Advanced
 	var points = [];

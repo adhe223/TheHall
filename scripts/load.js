@@ -4,13 +4,10 @@ var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
 var owners = {};
 var leagueSeasons = {};
+var leagueURL;
+var leagueID;
 
 function load() {
-	requestCrossDomain();
-	loadWL();
-}
-
-function requestCrossDomain() {
 	var addr = document.getElementById("inputURL").value;
 
 	//Check if address was entered
@@ -19,16 +16,20 @@ function requestCrossDomain() {
 		return false;
 	}
 	
-	//Set leagueurl in local storage
-	localStorage.setItem("leagueURL", addr);
+	leagueURL = addr;
 	
 	//Set the leagueID in local storage
 	var n = addr.indexOf("leagueId=") + 9;
 	var amp = addr.indexOf("&",n);
-	localStorage.setItem("leagueID", addr.substring(n, amp));
+	leagueID = addr.substring(n, amp);
 	
+	requestCrossDomain();
+	loadWL();
+}
+
+function requestCrossDomain() {		
 	//Add '#games-tabs1' so that only the section with the teams is returned from yql query
-	var yqlLeague = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + addr + '"') + " #games-tabs1";
+	var yqlLeague = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + leagueURL + '"') + " #games-tabs1";
 	
 	//New way to load and manipulate
 	$("#back-results").load(yqlLeague, function() {
@@ -75,11 +76,11 @@ function loadWL() {
 	back.html("");
 	
 	//First load the number of years, then wait and execute the rest
-	var standingsURL = STANDINGS.replace(" ", localStorage["leagueID"]);
+	var standingsURL = STANDINGS.replace(" ", leagueID);
 	standingsURL = standingsURL.replace(",", CURRYEAR);
 	
 	//Prepare the URL to retrieve all the data from
-	var finalStandingsURL = FINAL_STANDINGS.replace(" ", localStorage["leagueID"]);
+	var finalStandingsURL = FINAL_STANDINGS.replace(" ", leagueID);
 	finalStandingsURL = finalStandingsURL.replace(",", CURRYEAR);
 	
 	var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + standingsURL + '"') + " #seasonHistoryMenu";
@@ -99,7 +100,7 @@ function loadWL() {
 			year = CURRYEAR - count;
 		
 			//Generate URL for the year
-			var finalStandingsURL = FINAL_STANDINGS.replace(" ", localStorage["leagueID"]);
+			var finalStandingsURL = FINAL_STANDINGS.replace(" ", leagueID);
 			finalStandingsURL = finalStandingsURL.replace(",", year);
 			var yqlStand = 'https://query.yahooapis.com/v1/public/yql?q=' + encodeURIComponent('select * from html where url="' + finalStandingsURL + '"') + " #finalRankingsTable";
 			
@@ -127,6 +128,7 @@ function loadParseStandings(urlQueue) {
 	//Load into the hidden pane
 	var id;
 	var name;
+	var teamName;
 	var back = $("#back-results");
 	
 	back.html("");
@@ -134,7 +136,9 @@ function loadParseStandings(urlQueue) {
 		
 		$(".sortableRow").each(function(index) {
 			//Also parse out the name of the owner
-			name = titleToName($(this).find("a").attr('title'));
+			var title = $(this).find("a").attr('title');
+			name = titleToName(title);
+			teamName = titleToTeamName(title);
 			
 			var year = urlToYear(url);
 			
@@ -181,16 +185,22 @@ function loadParseStandings(urlQueue) {
 			owners[name].pointsFor = owners[name].pointsFor + yearPF;
 			owners[name].seasons[year].pointsFor = yearPF;
 			leagueSeasons[year].totalPF = leagueSeasons[year].totalPF + yearPF;
+			trackSeasonSuper(year, "mostPointsFor", yearPF, true, name, teamName);
+			trackSeasonSuper(year, "leastPointsFor", yearPF, false, name, teamName);
 			
 			//Points against
 			var yearPA = parseFloat($(this).find(".sortablePA").text().trim());
 			owners[name].pointsAgainst = owners[name].pointsAgainst + yearPA;
 			owners[name].seasons[year].pointsAgainst = yearPA;
+			trackSeasonSuper(year, "mostPointsAgainst", yearPA, true, name, teamName);
+			trackSeasonSuper(year, "leastPointsAgainst", yearPA, false, name, teamName);
 			
 			//Point Differential
 			var yearPD = yearPF - yearPA;
 			owners[name].pointDiff = owners[name].pointDiff + yearPD;
 			owners[name].seasons[year].pointDiff = yearPD;
+			trackSeasonSuper(year, "mostPointDiff", yearPD, true, name, teamName);
+			trackSeasonSuper(year, "leastPointDiff", yearPD, false, name, teamName);
 		});
 		
 		//Recursively call on the next element
@@ -209,6 +219,27 @@ function urlToID (url) {
 	return id;
 }
 
+//Track superlatives for leagueSeason objects
+function trackSeasonSuper(year, field, currVal, max, ownerName, teamName) {
+	if (max) {
+		if (typeof leagueSeasons[year][field] != 'undefined') {
+			if (leagueSeasons[year][field].val < currVal) {
+				leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+			}
+		} else {
+			leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+		}
+	} else {
+		if (typeof leagueSeasons[year][field] != 'undefined') {
+			if (leagueSeasons[year][field].val > currVal) {
+				leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+			}
+		} else {
+			leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+		}
+	}
+}
+
 function titleToName (title) {
 	var name;
 	var i;
@@ -217,6 +248,14 @@ function titleToName (title) {
 	j = title.indexOf(")");
 	name = title.substring(i+1, j);
 	return name;
+}
+
+function titleToTeamName (title) {
+	var teamName;
+	var i;
+	i = title.indexOf(" (");
+	teamName = title.substring(0,i);
+	return teamName;
 }
 
 //Converts a team url to the season year

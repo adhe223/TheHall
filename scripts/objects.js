@@ -24,4 +24,18 @@ function LeagueSeason(inYear) {
 	this.year = inYear;
 	this.totalPF = 0.0;
 	this.champion = "";
+	this.mostWins = [];
+	this.mostLosses = [];
+	this.mostPointsFor;
+	this.mostPointsAgainst;
+	this.mostPointDiff;
+	this.leastPointsFor;
+	this.leastPointsAgainst;
+	this.leastPointDiff;
+}
+
+function Record(inOwnerName, inTeamName, inVal) {
+	this.ownerName = inOwnerName;
+	this.teamName = inTeamName;
+	this.val = inVal;
 }
