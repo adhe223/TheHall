@@ -25,7 +25,6 @@ var darkChart = {
 };
 
 function displayData() {	
-	debugger;
 	//Standings
 	displayWins();
 	displayLosses();

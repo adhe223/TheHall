@@ -34,7 +34,8 @@ function LeagueSeason(inYear) {
 	this.leastPointDiff;
 }
 
-function Record(inOwnerName, inTeamName, inVal) {
+function Record(inYear, inOwnerName, inTeamName, inVal) {
+	this.year = inYear;
 	this.ownerName = inOwnerName;
 	this.teamName = inTeamName;
 	this.val = inVal;

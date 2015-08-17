@@ -224,18 +224,18 @@ function trackSeasonSuper(year, field, currVal, max, ownerName, teamName) {
 	if (max) {
 		if (typeof leagueSeasons[year][field] != 'undefined') {
 			if (leagueSeasons[year][field].val < currVal) {
-				leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+				leagueSeasons[year][field] = new Record(year, ownerName, teamName, currVal);
 			}
 		} else {
-			leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+			leagueSeasons[year][field] = new Record(year, ownerName, teamName, currVal);
 		}
 	} else {
 		if (typeof leagueSeasons[year][field] != 'undefined') {
 			if (leagueSeasons[year][field].val > currVal) {
-				leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+				leagueSeasons[year][field] = new Record(year, ownerName, teamName, currVal);
 			}
 		} else {
-			leagueSeasons[year][field] = new Record(ownerName, teamName, currVal);
+			leagueSeasons[year][field] = new Record(year, ownerName, teamName, currVal);
 		}
 	}
 }
