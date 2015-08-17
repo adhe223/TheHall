@@ -4,8 +4,8 @@ var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
 var owners = {};
 var leagueSeasons = {};
-var leagueURL;
-var leagueID;
+var leagueURL = "";
+var leagueID = "";
 
 function load() {
 	var addr = document.getElementById("inputURL").value;

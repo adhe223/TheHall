@@ -32,7 +32,7 @@ $(document).ready(function() {
 	});
 	
 	//Disable UI tabs if address is not set
-	if (leagueURL === null) {
+	if (leagueURL.length == 0) {
 		clearSite();
 	} else {
 		hideURL(0);
@@ -109,5 +109,9 @@ function clearSite() {
 	hideResults();
 	disablePills();
 	localStorage.clear();
+	owners = {};
+	leagueSeasons = {};
+	leagueURL = "";
+	leagueID = "";
 	showURL(900);
 }
