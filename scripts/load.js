@@ -22,6 +22,9 @@ function load() {
 	var n = addr.indexOf("leagueId=") + 9;
 	var amp = addr.indexOf("&",n);
 	leagueID = addr.substring(n, amp);
+
+	localStorage.setItem("leagueURL", leagueURL);
+	localStorage.setItem("leagueID", leagueID);
 	
 	requestCrossDomain();
 	loadWL();
@@ -117,7 +120,7 @@ function loadParseStandings(urlQueue) {
 
 	//Base case to stop recurse
 	if (typeof(url) === 'undefined') {
-		//We have gone through every year, now show the results!
+		//We have gone through every year, now save and show the results!
 		localStorage.setItem("owners", JSON.stringify(owners));
 		localStorage.setItem("leagueSeasons", JSON.stringify(leagueSeasons));
 		
@@ -166,11 +169,13 @@ function loadParseStandings(urlQueue) {
 			var yearWins = parseInt(wlString.slice(0, dashLoc), 10);
 			owners[name].wins = owners[name].wins + yearWins;
 			owners[name].seasons[year].wins = yearWins;
+			trackOwnerRecord(true, "mostWinsInSeason", yearWins, year, name, teamName);
 			
 			//Losses
 			var yearLosses = parseInt(wlString.slice(dashLoc + 1), 10);
 			owners[name].losses = owners[name].losses + yearLosses;
 			owners[name].seasons[year].losses = yearLosses;
+			trackOwnerRecord(true, "mostLossesInSeason", yearLosses, year, name, teamName);
 			
 			//Draws
 			if (wlString.indexOf("-", dashLoc+1) != -1) {
@@ -238,6 +243,19 @@ function trackSeasonSuper(year, field, currVal, max, ownerName, teamName) {
 			leagueSeasons[year][field] = new Record(year, ownerName, teamName, currVal);
 		}
 	}
+}
+
+function trackOwnerRecord(max, field, currVal, year, ownerName, teamName) {
+    if (owners[ownerName][field].length == 0) {
+        owners[ownerName][field].push(new Record(year, ownerName, teamName, currVal));
+    } else if (owners[ownerName][field][0].val == currVal) {
+        //May need to store multiple years with the same number of wins
+        owners[ownerName][field].push(new Record(year, ownerName, teamName, currVal));
+    } else if ((max && owners[ownerName][field][0].val < currVal) || (!max && owners[ownerName][field][0].val > currVal)) {
+        //Reset to empty array
+        owners[ownerName][field] = [];
+        owners[ownerName][field].push(new Record(year, ownerName, teamName, currVal));
+    }
 }
 
 function titleToName (title) {
