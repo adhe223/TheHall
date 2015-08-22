@@ -39,7 +39,6 @@ body {
 .results-box {
 	background-color: #333333;
 	width: 88%;
-	height: 1570px;
 	margin-top: 75px;
 	margin-left: 6%;
 	opacity: 0.95;
@@ -48,25 +47,6 @@ body {
     border-radius: 16px;
 }
 
-#losses-section {
-	position: relative;
-	top: 510px;
-}
-
-#wl-section {
-	position: relative;
-	top: 1020px;
-}
-
-#pa-section {
-	position: relative;
-	top: 510px;
-}
-
-#pd-section {
-	position: relative;
-	top: 1020px;
-}
 
 .results-box p {
 	color: white;
@@ -91,6 +71,10 @@ body {
 
 .nav a {
 	color: white;
+}
+
+.graph {
+    min-height: 500px;
 }
 
 /*Table css*/

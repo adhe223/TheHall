@@ -30,7 +30,10 @@ function displayData() {
 	displayLosses();
 	displayWLP();
 	
-	//Seasons
+    //Seasons
+	displayMostWinsGraph();
+	displayMostLossesGraph();
+	displayMostPFGraph();
 	displayChamps();
 	displaySuperlatives();
 	
@@ -44,7 +47,7 @@ function displayData() {
 function displayWins() {
 	var wins = [];
 	
-	//Use the owner object instead
+	//Populate from the owner's object
 	for (var name in owners) {
 		if (owners.hasOwnProperty(name)) {
 			wins.push({key: name, val: owners[name].wins});

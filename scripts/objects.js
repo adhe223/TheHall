@@ -11,6 +11,7 @@ function Owner(inName) {
 	this.runnerups = 0;
 	this.mostWinsInSeason = [];
 	this.mostLossesInSeason = [];
+	this.mostPFInSeason = [];
 }
 
 function OwnerSeason(inYear) {

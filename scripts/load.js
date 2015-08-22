@@ -198,6 +198,7 @@ function loadParseStandings(urlQueue) {
 			leagueSeasons[year].totalPF = leagueSeasons[year].totalPF + yearPF;
 			trackSeasonSuper(year, "mostPointsFor", yearPF, true, name, teamName);
 			trackSeasonSuper(year, "leastPointsFor", yearPF, false, name, teamName);
+			trackOwnerRecord(true, "mostPFInSeason", yearPF, year, name, teamName);
 			
 			//Points against
 			var yearPA = parseFloat($(this).find(".sortablePA").text().trim());
