@@ -90,7 +90,7 @@ function loadWL() {
 	
 	back.load(yqlStand, function() {
 		//Parse the number of years the league has been active
-		numYears = $("option").length;		//Counts the years available to select
+		numYears = $("option").length - 1;		//Counts the years available to select ***-1 because 2015 has no data in it
 		localStorage.setItem("numYears", numYears);
 
 		//Initialize the array/queue we will use to store the URLS
@@ -135,7 +135,15 @@ function loadParseStandings(urlQueue) {
 	var back = $("#back-results");
 	
 	back.html("");
-	back.load(url, function() {
+	back.load(url, function () {
+
+	    var year = urlToYear(url);
+
+	    //Save the season info in a season object
+	    if (typeof (leagueSeasons[year]) === 'undefined') {
+	        leagueSeasons[year] = new LeagueSeason(year);
+	    }
+	    leagueSeasons[year].numberTeams = $(".sortableRow").length;
 		
 		$(".sortableRow").each(function(index) {
 			//Also parse out the name of the owner
@@ -143,18 +151,11 @@ function loadParseStandings(urlQueue) {
 			name = titleToName(title);
 			teamName = titleToTeamName(title);
 			
-			var year = urlToYear(url);
-			
 			//Save the season info in an owner object
 			if (typeof(owners[name]) === 'undefined') {
 					owners[name] = new Owner(name);
 			}
 			owners[name].seasons[year] = new OwnerSeason(year);
-			
-			//Save the season info in a season object as well
-			if (typeof(leagueSeasons[year]) === 'undefined') {
-					leagueSeasons[year] = new LeagueSeason(year);
-			}
 			
 			//Save if champion (first row in table)
 			if (index == 0) {

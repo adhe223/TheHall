@@ -42,7 +42,7 @@ function displayPoints() {
 	
 	//Generate points for chart to display.
 	var pfChart = new CanvasJS.Chart("pf-section", darkChart);
-	pfChart.options.title.text = "Points For";
+	pfChart.options.title.text = "Total Points For";
 	
 	//Dynamically set the chart dataseries
 	pfChart.options.data = [];
@@ -71,7 +71,7 @@ function displayPoints() {
 	
 	//Generate points for chart to display.
 	var paChart = new CanvasJS.Chart("pa-section", darkChart);
-	paChart.options.title.text = "Points Against";
+	paChart.options.title.text = "Total Points Against";
 	
 	//Dynamically set the chart dataseries
 	paChart.options.data = [];
@@ -102,7 +102,7 @@ function displayPointDiff(points) {
 	
 	//Generate points for chart to display.
 	var pdChart = new CanvasJS.Chart("pd-section", darkChart);
-	pdChart.options.title.text = "Point Differential";
+	pdChart.options.title.text = "Total Point Differential";
 	
 	//Dynamically set the chart dataseries
 	pdChart.options.data = [];

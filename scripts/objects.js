@@ -25,7 +25,8 @@ function OwnerSeason(inYear) {
 }
 
 function LeagueSeason(inYear) {
-	this.year = inYear;
+    this.year = inYear;
+    this.numberTeams = 0;
 	this.totalPF = 0.0;
 	this.champion = "";
 	this.runnerup = "";

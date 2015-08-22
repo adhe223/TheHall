@@ -123,6 +123,36 @@ function displayMostPFGraph() {
     mostPFChart.render();
 }
 
+function displaySeasonPFGraph() {
+    var seasonPF = [];
+
+    for (var season in leagueSeasons) {
+        if (leagueSeasons.hasOwnProperty(season)) {
+            seasonPF.push({ label: season, y: (leagueSeasons[season].totalPF / leagueSeasons[season].numberTeams) });
+        }
+    }
+
+    //Sort the results
+    seasonPF.sort(function (a, b) {
+        if (a.y > b.y) { return -1; }
+        if (a.y < b.y) { return 1; }
+        return 0;
+    });
+
+    //Generate chart to display.
+    var seasonPFChart = new CanvasJS.Chart("seasonPF-section", darkChart);
+    seasonPFChart.options.title.text = "Average Points Per Team by Season";
+
+    seasonPFChart.options.data = [{
+        type: "column",
+        dataPoints: seasonPF
+    }
+    ]
+
+    //Display the chart
+    seasonPFChart.render();
+}
+
 //Return a record object to the corresponding field
 function calcRecord(field, max) {
 	var temp;

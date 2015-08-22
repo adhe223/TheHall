@@ -31,11 +31,12 @@ function displayData() {
 	displayWLP();
 	
     //Seasons
+	displayChamps();
+	displaySuperlatives();
 	displayMostWinsGraph();
 	displayMostLossesGraph();
 	displayMostPFGraph();
-	displayChamps();
-	displaySuperlatives();
+	displaySeasonPFGraph();
 	
 	//Advanced
 	var points = [];
@@ -63,7 +64,7 @@ function displayWins() {
 	
 	//Generate chart to display.
 	var winsChart = new CanvasJS.Chart("wins-section", darkChart);
-	winsChart.options.title.text = "Wins";
+	winsChart.options.title.text = "Total Wins";
 	
 	//Dynamically set the chart dataseries
 	winsChart.options.data = [];
@@ -100,7 +101,7 @@ function displayLosses() {
 	
 	//Generate chart to display.
 	var lossesChart = new CanvasJS.Chart("losses-section", darkChart);
-	lossesChart.options.title.text = "Losses";
+	lossesChart.options.title.text = "Total Losses";
 	
 	//Dynamically set the chart dataseries
 	lossesChart.options.data = [];
