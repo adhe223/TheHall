@@ -161,6 +161,12 @@ function loadParseStandings(urlQueue) {
 				owners[name].championships = owners[name].championships + 1;
 				leagueSeasons[year].champion = name;
 			}
+
+		    //Save if runnerup (second row in table)
+			if (index == 1) {
+			    owners[name].runnerups = owners[name].runnerups + 1;
+			    leagueSeasons[year].runnerup = name;
+			}
 			
 			var wlString = $(this).find(".sortableREC").text().trim();
 			var dashLoc = wlString.indexOf("-");

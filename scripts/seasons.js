@@ -1,9 +1,9 @@
 function displayChamps() {
 	for (var name in owners) {
-		if (owners.hasOwnProperty(name)) {
-			if (owners[name].championships > 0) {
-				$('#ChampionsTable').append('<tr><td>' + name + '</td><td>' + owners[name].championships + '</td></tr>');
-			}
+	    if (owners.hasOwnProperty(name)) {
+	        if (owners[name].championships > 0 || owners[name].runnerups > 0) {
+	            $('#ChampionsTable').append('<tr><td>' + name + '</td><td>' + owners[name].championships + '</td><td>' + owners[name].runnerups + '</td></tr>');
+	        }
 		}
 	}
 }

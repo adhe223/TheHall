@@ -8,6 +8,7 @@ function Owner(inName) {
 	this.pointsAgainst = 0.0;
 	this.pointDiff = 0.0;
 	this.championships = 0;
+	this.runnerups = 0;
 	this.mostWinsInSeason = [];
 	this.mostLossesInSeason = [];
 }
@@ -26,6 +27,7 @@ function LeagueSeason(inYear) {
 	this.year = inYear;
 	this.totalPF = 0.0;
 	this.champion = "";
+	this.runnerup = "";
 	this.mostWins = [];
 	this.mostLosses = [];
 	this.mostPointsFor;
