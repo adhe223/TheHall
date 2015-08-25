@@ -104,10 +104,16 @@ function scrollTo(elementScroll) {
 	}, 1000);
 }
 
+function clearTables() {
+    $('table td').remove();
+}
+
 function clearSite() {
 	changeActiveTab(localStorage.getItem("activetab"), "#home-nav");
 	hideResults();
 	disablePills();
+	clearTables();
+
 	localStorage.clear();
 	owners = {};
 	leagueSeasons = {};
