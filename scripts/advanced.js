@@ -19,7 +19,8 @@ var darkChart = {
 		},
 		toolTip: {
 			borderColor: "#1C1C19",
-			backgroundColor: "#282824"
+			backgroundColor: "#282824",
+            fontColor: "white"
 		},
 		height: 500
 };
