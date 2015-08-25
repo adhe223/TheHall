@@ -1,4 +1,38 @@
-$(document).ready(function() {	
+$(document).ready(function () {
+    darkChart = {
+        backgroundColor: "#282824",
+        colorSet: "darkYellow",
+        title: {
+            fontColor: "#E6E272"
+        },
+        axisY: {
+            interlacedColor: "#1C1C19",
+            labelFontSize: 18,
+            labelAngle: 60,
+            tickColor: "#4A4A43",
+            gridColor: "#4A4A43"
+        },
+        axisX: {
+            labelFontSize: 18,
+            labelAngle: 70,
+            tickColor: "#4A4A43"
+        },
+        toolTip: {
+            borderColor: "#1C1C19",
+            backgroundColor: "#282824",
+            fontColor: "white"
+        },
+        height: 500,
+        width: $(document).width() * 0.86   //It is bad that this is hardcoded, but in there now to fix bug of charts being too wide when displaying from localStorage
+    };
+
+    //Set chart colorsets
+    CanvasJS.addColorSet("darkYellow",
+		[
+		"#F3EB00",
+		"#858226"
+		]);
+
 	//Set the active tab
 	localStorage.setItem("activetab", "#home-nav");
 
@@ -31,19 +65,22 @@ $(document).ready(function() {
 		}
 	});
 	
-	//Disable UI tabs if address is not set
-	if (leagueURL.length == 0) {
-		clearSite();
+    //Check if we have data to load from localStorage
+	if (localStorage.getItem("loadedHOF")) {
+	    loadLocalData();
+	    
+	    //Prepare page
+	    clearTables();
+	    enablePills();
+	    showResults();
+
+	    //Display it
+	    displayData();
+	    return;
 	} else {
-		hideURL(0);
+	    clearSite();
+	    showURL(900);
 	}
-	
-	//Set chart colorsets
-	CanvasJS.addColorSet("darkYellow",
-		[
-		"#F3EB00",
-		"#858226"
-		]);
 });
 
 function changeActiveTab(oldTabID, newTabID) {
@@ -111,6 +148,7 @@ function clearTables() {
 function clearSite() {
 	changeActiveTab(localStorage.getItem("activetab"), "#home-nav");
 	hideResults();
+	hideCharts();
 	disablePills();
 	clearTables();
 
@@ -120,4 +158,19 @@ function clearSite() {
 	leagueURL = "";
 	leagueID = "";
 	showURL(900);
+}
+
+function hideCharts() {
+    $('.canvasjs-chart-container').hide(0);
+}
+
+function showCharts() {
+    $('.canvasjs-chart-container').show(0);
+}
+
+function loadLocalData() {
+    owners = JSON.parse(localStorage.getItem("owners"));
+    leagueSeasons = JSON.parse(localStorage.getItem("leagueSeasons"));
+    leagueURL = localStorage.getItem("leagueURL");
+    leagueID = localStorage.getItem("leagueID");
 }

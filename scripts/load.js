@@ -1,12 +1,3 @@
-//ESPN URLs, replace the space character with leagueID and the comma with the year
-var CURRYEAR="2014";
-var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
-var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
-var owners = {};
-var leagueSeasons = {};
-var leagueURL = "";
-var leagueID = "";
-
 function load() {
 	var addr = document.getElementById("inputURL").value;
 
@@ -123,6 +114,7 @@ function loadParseStandings(urlQueue) {
 		//We have gone through every year, now save and show the results!
 		localStorage.setItem("owners", JSON.stringify(owners));
 		localStorage.setItem("leagueSeasons", JSON.stringify(leagueSeasons));
+		localStorage.setItem("loadedHOF", true);
 		
 		displayData();
 		return;
