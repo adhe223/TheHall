@@ -1,5 +1,5 @@
 function load() {
-	leagueID = document.getElementById("inputURL").value;
+	leagueID = document.getElementById("inputID").value;
 	leagueURL = "http://games.espn.go.com/ffl/leagueoffice?leagueId=" + leagueID + "&seasonId=2015";
 
 	//Check if address was entered
