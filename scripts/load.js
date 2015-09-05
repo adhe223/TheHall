@@ -1,18 +1,12 @@
 function load() {
-	var addr = document.getElementById("inputURL").value;
+	leagueID = document.getElementById("inputURL").value;
+	leagueURL = "http://games.espn.go.com/ffl/leagueoffice?leagueId=" + leagueID + "&seasonId=2015";
 
 	//Check if address was entered
-	if (!addr) {
-		alert('No site passed!');
+	if (leagueID.length == 0) {
+		alert('No league ID passed!');
 		return false;
 	}
-	
-	leagueURL = addr;
-	
-	//Set the leagueID in local storage
-	var n = addr.indexOf("leagueId=") + 9;
-	var amp = addr.indexOf("&",n);
-	leagueID = addr.substring(n, amp);
 
 	localStorage.setItem("leagueURL", leagueURL);
 	localStorage.setItem("leagueID", leagueID);
