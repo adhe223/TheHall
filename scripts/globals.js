@@ -1,5 +1,5 @@
 //ESPN URLs, replace the space character with leagueID and the comma with the year
-var CURRYEAR="2014";
+var CURRYEAR="2015";
 var STANDINGS="http://games.espn.go.com/ffl/standings?leagueId= &seasonId=,";
 var FINAL_STANDINGS="http://games.espn.go.com/ffl/tools/finalstandings?leagueId= &seasonId=,";
 var owners = {};

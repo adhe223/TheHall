@@ -75,7 +75,7 @@ function loadWL() {
 	
 	back.load(yqlStand, function() {
 		//Parse the number of years the league has been active
-		numYears = $("option").length - 1;		//Counts the years available to select ***-1 because 2015 has no data in it
+		numYears = $("option").length;		//Counts the years available to select
 		localStorage.setItem("numYears", numYears);
 
 		//Initialize the array/queue we will use to store the URLS
